@@ -1,0 +1,28 @@
+<h2>Products</h2>
+<table class="table table-stripped">
+    <thead class="table-dark">
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let product of products">
+            <td>
+                <img src="{{ product.imageUrl }}" />
+            </td>
+            <td>
+                {{ product.imageUrl }}
+            </td>
+            <td>
+                {{ product.name }}
+            </td>
+            <td>
+                {{ product.unitPrice | currency:'USD'}}
+            </td>
+        </tr>
+    </tbody>
+</table>
