@@ -11,8 +11,12 @@
                     @for (product of products; track $index) {
                         <div class="col-md-3">
                             <div class="product-box">
-                                <img src="{{ product.imageUrl }}" class="image-responsive" width="50px"/>
-                                <h1>{{ product.name }}</h1>
+                                <a routerLink="/products/{{ product.id }}">
+                                    <img src="{{ product.imageUrl }}" class="image-responsive" width="50px"/>
+                                </a>
+                                <a routerLink="/products/{{ product.id }}">
+                                    <h1>{{ product.name }}</h1>
+                                </a>
                                 <h1>{{ product.unitPrice | currency:'USD'}}</h1>
                                 <a href="#" class="primary-btn">Add to cart</a>
                             </div>

@@ -37,6 +37,12 @@ export class ProductService {
       map(response => response._embedded.products)
     )
   }
+
+  findProductById(id: number) {
+    const productUrl = `${this.baseUrl}/${id}`
+
+    return this.httpClient.get<Product>(productUrl);
+  }
 }
 
 interface GetResponseProducts {
