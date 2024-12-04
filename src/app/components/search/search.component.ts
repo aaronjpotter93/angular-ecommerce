@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  searchProducts(value: string) {
+  searchProductsPaginate(value: string) {
     this.router.navigateByUrl(`/search/${value}`)
   }
 

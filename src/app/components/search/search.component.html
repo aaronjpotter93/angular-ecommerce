@@ -2,9 +2,9 @@
     <input #keyword type="text"
             placeholder="Search for data ..." 
             class="au-input au-input-xl" 
-            (keyup.enter)="searchProducts(keyword.value)" />
+            (keyup.enter)="searchProductsPaginate(keyword.value)" />
 
-    <button (click)="searchProducts(keyword.value)" class="au-btn-submit">
+    <button (click)="searchProductsPaginate(keyword.value)" class="au-btn-submit">
         Search
     </button>
 </div>
