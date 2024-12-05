@@ -1,0 +1,67 @@
+<div class="main-content">
+    <div class="section-content section-content-p30">
+        <div class="container-fluid">
+            @if (cartItems.length == 0) {
+                <div class="alert alert-warning col-md-12" role="alert">
+                    Cart is Empty
+                </div>
+                <a routerLink="/products" class="mt-5">Back to Product List</a>
+            }  
+            @else {
+                <div class="container mt-5">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 20%">Image</th>
+                                <th style="width: 50%">Product Detail</th>
+                                <th style="width: 30%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of cartItems; track $index) {
+                                <tr>
+                                    <td><img src="{{item.imageUrl}}" class="image-responsive" alt="product image" style="width: 150px"></td>
+                                    <td>
+                                        <p>{{item.name}}</p>
+                                        <p>{{item.unitPrice}}</p>
+                                    </td>
+                                    <td>
+                                        <div class="items">
+                                            <label>Quantity: </label>
+                                            <div class="row no-gutters">
+                                                <div class="col">
+                                                    <button (click)="incrementQuantity(item)" class="btn btn-primary btn-sm" style="margin: 3px;">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col ml-4 mr-2">
+                                                    {{item.quantity}}
+                                                </div>
+                                                <div class="col">
+                                                    <button (click)="decrementQuantity(item, $index)" class="btn btn-primary btn-sm" style="margin: 3px;">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button (click)="remove($index)" class="btn btn-primary btn-sm">remove</button>
+                                        </div>
+                                        
+                                        <p class="mt-2">Subtotal: {{item.quantity * item.unitPrice | currency:'USD'}}</p>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td style="font-weight: bold; display: flex; justify-self: flex-end;">
+                                    <p>Total</p>
+                                    <p style="color: transparent;">Tol</p>
+                                    <p>{{ total | currency:"USD"}}</p>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>  
+            }
+        </div>
+    </div>
+</div>

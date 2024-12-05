@@ -14,6 +14,8 @@ import { CartItem } from '../../common/cart-item';
 })
 export class ProductListComponent implements OnInit {
 
+  loading: boolean = true;
+
   products: Product[] = [];
   currentCategoryId: number = 1;
   previousCategoryId: number = 1; 
@@ -28,6 +30,10 @@ export class ProductListComponent implements OnInit {
   constructor(private productService: ProductService, private cartService: CartService, private route: ActivatedRoute) {}
   
   ngOnInit(): void {
+    setTimeout(() => {
+      this.loading = false;
+    }, 250); 
+
     this.route.paramMap.subscribe(() => {
       this.listProducts();
     })
