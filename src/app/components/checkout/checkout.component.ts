@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../common/cart-item';
+import { ShopFormService } from '../../services/shop-form.service';
 
 @Component({
   selector: 'app-checkout',
@@ -17,7 +18,10 @@ export class CheckoutComponent implements OnInit{
   total: number = 0.00;
   quantity: number = 0;
 
-  constructor(private formBuilder: FormBuilder, private cartService: CartService) {}
+  creditCardMonths: number[] = [];
+  creditCardYears: number[] = [];
+
+  constructor(private formBuilder: FormBuilder, private cartService: CartService, private shopFormSvice: ShopFormService) {}
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -51,6 +55,19 @@ export class CheckoutComponent implements OnInit{
     });
 
     this.getCart();
+
+    const startMonth: number = new Date().getMonth() + 1;
+    this.shopFormSvice.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        this.creditCardMonths = data;
+      }
+    );
+
+    this.shopFormSvice.getCreditCardYears().subscribe(
+      data => {
+        this.creditCardYears = data;
+      }
+    );
   }
 
   copyShipping(event: any) {
@@ -73,5 +90,26 @@ export class CheckoutComponent implements OnInit{
   onSubmit() {
     console.log('submit handler start')
     console.log(this.checkoutFormGroup.get('customer')?.value);
+  }
+
+  handleMonthsAndYears() {
+    const creditCardFormGroup = this.checkoutFormGroup.get('payment');
+
+    const currentYear: number = new Date().getFullYear();
+    const selectedYear: number = Number(creditCardFormGroup?.value.year);
+
+    let startMonth: number;
+
+    if (currentYear == selectedYear) {
+      startMonth = new Date().getMonth() + 1;
+    }
+    else {
+      startMonth = 1;
+    }
+    this.shopFormSvice.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        this.creditCardMonths = data;
+      }
+    )
   }
 }
