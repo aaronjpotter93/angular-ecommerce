@@ -9,7 +9,7 @@ export class CartService {
 
   cartItems: CartItem[] = [];
   totalPrice: Subject<number> = new Subject;
-  itemQuantity: Subject<number> = new Subject;
+  totalQuantity: Subject<number> = new Subject;
 
   constructor() { }
 
@@ -47,6 +47,6 @@ export class CartService {
     }
 
     this.totalPrice.next(priceTotal);
-    this.itemQuantity.next(quantityTotal);
+    this.totalQuantity.next(quantityTotal);
   }
 }

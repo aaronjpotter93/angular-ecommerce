@@ -51,12 +51,13 @@
                                 </tr>
                             }
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td style="font-weight: bold; display: flex; justify-self: flex-end;">
-                                    <p>Total</p>
-                                    <p style="color: transparent;">Tol</p>
-                                    <p>{{ total | currency:"USD"}}</p>
+                                <td colspan="2"></td>
+                                <td style="font-weight: bold">
+                                    <p>Total Quantity: {{ quantity }}</p>
+                                    <p>FREE SHIPPING</p>
+                                    <p>Total Price: {{ total | currency:"USD"}}</p>
+                                    <button routerLink="/checkout" class="btn btn-primary btn-sm">Proceed to Checkout</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
