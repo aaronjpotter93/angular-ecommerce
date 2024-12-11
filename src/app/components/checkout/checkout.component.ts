@@ -81,10 +81,8 @@ export class CheckoutComponent implements OnInit{
   }
 
   getCart(): void {
-    this.cartItems = this.cartService.cartDetails();
     this.cartService.totalPrice.subscribe(data => this.total = data);
     this.cartService.totalQuantity.subscribe(data => this.quantity = data);
-    this.cartService.calculateCartTotals();
   }
 
   onSubmit() {
