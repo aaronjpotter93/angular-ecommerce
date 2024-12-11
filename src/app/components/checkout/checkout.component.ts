@@ -3,6 +3,11 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../common/cart-item';
 import { ShopFormService } from '../../services/shop-form.service';
+import { CheckoutService } from '../../services/checkout.service';
+import { Router } from '@angular/router';
+import { Order } from '../../common/order';
+import { OrderItem } from '../../common/order-item';
+import { Purchase } from '../../common/purchase';
 
 @Component({
   selector: 'app-checkout',
@@ -21,7 +26,7 @@ export class CheckoutComponent implements OnInit{
   creditCardMonths: number[] = [];
   creditCardYears: number[] = [];
 
-  constructor(private formBuilder: FormBuilder, private cartService: CartService, private shopFormSvice: ShopFormService) {}
+  constructor(private formBuilder: FormBuilder, private cartService: CartService, private shopFormService: ShopFormService, private checkoutService: CheckoutService, private router: Router) {}
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -57,13 +62,13 @@ export class CheckoutComponent implements OnInit{
     this.getCart();
 
     const startMonth: number = new Date().getMonth() + 1;
-    this.shopFormSvice.getCreditCardMonths(startMonth).subscribe(
+    this.shopFormService.getCreditCardMonths(startMonth).subscribe(
       data => {
         this.creditCardMonths = data;
       }
     );
 
-    this.shopFormSvice.getCreditCardYears().subscribe(
+    this.shopFormService.getCreditCardYears().subscribe(
       data => {
         this.creditCardYears = data;
       }
@@ -86,8 +91,58 @@ export class CheckoutComponent implements OnInit{
   }
 
   onSubmit() {
-    console.log('submit handler start')
-    console.log(this.checkoutFormGroup.get('customer')?.value);
+
+    if(this.checkoutFormGroup.invalid) {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+    }
+
+    let order = new Order();
+    order.totalPrice = this.total;
+    order.totalQuantity = this.quantity;
+
+    let cartItems = this.cartService.cartItems;
+
+    let orderItems: OrderItem[] = cartItems.map(cartItem => new OrderItem(cartItem));
+
+    let purchase = new Purchase();
+
+    purchase.customer = this.checkoutFormGroup.controls['customer'].value;
+
+    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value;
+    // const shippingState = State = JSON.parse(JSON.stringify(purchase.shippingAddress.state));
+    // const shippingCountry = Country = JSON.parse(JSON.stringify(purchase.shippingAddress.country));
+    // purchase.shippingAddress.state = shippingState.name;
+    // purchase.shippingAddress.country = shippingCountry.name;
+
+    purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value;
+    // const billingState = State = JSON.parse(JSON.stringify(purchase.billingAddress.state));
+    // const billingCountry = Country = JSON.parse(JSON.stringify(purchase.billingAddress.country));
+    // purchase.billingAddress.state = billingState.name;
+    // purchase.billingAddress.country = billingCountry.name;
+
+    purchase.order = order;
+    purchase.orderItems = orderItems;
+
+    this.checkoutService.placeOrder(purchase).subscribe(
+      {
+        next: response => {
+          alert(`You're order has been received. \nOrder Tracking Number: ${response.orderTrackingNumber}`);
+          this.resetCart();
+        },
+        error: err => {
+          alert(`There was an error: ${err.message}`);
+        }
+      }
+    );
+  }
+
+  resetCart() {
+    this.cartService.cartItems = [];
+    this.cartService.totalPrice.next(0);
+    this.cartService.totalQuantity.next(0);
+    this.checkoutFormGroup.reset();
+    this.router.navigateByUrl("/products");
   }
 
   handleMonthsAndYears() {
@@ -104,7 +159,7 @@ export class CheckoutComponent implements OnInit{
     else {
       startMonth = 1;
     }
-    this.shopFormSvice.getCreditCardMonths(startMonth).subscribe(
+    this.shopFormService.getCreditCardMonths(startMonth).subscribe(
       data => {
         this.creditCardMonths = data;
       }
