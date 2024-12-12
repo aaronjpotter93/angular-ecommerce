@@ -36,8 +36,10 @@
                         <div class="col-md-2"><label for="shippingCountry">Country</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="country" id="shippingCountry">
-                                    <option></option>
+                                <select formControlName="country" id="shippingCountry" (change)="getStates('shipping')">
+                                    @for (country of countries; track $index) {
+                                        <option>{{ country.name }}</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -63,7 +65,9 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="state" id="shippingState">
-                                    <option></option>
+                                    @for (state of shippingAddressStates; track $index) {
+                                        <option>{{ state.name }}</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -91,8 +95,10 @@
                         <div class="col-md-2"><label for="billingCountry">Country</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="country" id="billingCountry">
-                                    <option></option>
+                                <select formControlName="country" id="billingCountry" (change)="getStates('billing')">
+                                    @for (country of countries; track $index) {
+                                        <option>{{ country.name }}</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -118,7 +124,9 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="state" id="billingState">
-                                    <option></option>
+                                    @for (state of billingAddressStates; track $index) {
+                                        <option>{{ state.name }}</option>
+                                    }
                                 </select>
                             </div>
                         </div>

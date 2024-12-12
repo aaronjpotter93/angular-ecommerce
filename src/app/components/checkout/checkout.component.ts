@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { Order } from '../../common/order';
 import { OrderItem } from '../../common/order-item';
 import { Purchase } from '../../common/purchase';
+import { Country } from '../../common/country';
+import { State } from '../../common/state';
 
 @Component({
   selector: 'app-checkout',
@@ -25,6 +27,11 @@ export class CheckoutComponent implements OnInit{
 
   creditCardMonths: number[] = [];
   creditCardYears: number[] = [];
+
+  countries: Country[] = [];
+  states: State[] = [];
+  shippingAddressStates: State[] = [];
+  billingAddressStates: State[] = [];
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService, private shopFormService: ShopFormService, private checkoutService: CheckoutService, private router: Router) {}
 
@@ -73,6 +80,13 @@ export class CheckoutComponent implements OnInit{
         this.creditCardYears = data;
       }
     );
+
+    this.shopFormService.getCountries().subscribe(
+      data => {
+        console.log(`Received Countries: ${JSON.stringify(data)}`)
+        this.countries = data;
+      }
+    )
   }
 
   copyShipping(event: any) {
@@ -110,16 +124,16 @@ export class CheckoutComponent implements OnInit{
     purchase.customer = this.checkoutFormGroup.controls['customer'].value;
 
     purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value;
-    // const shippingState = State = JSON.parse(JSON.stringify(purchase.shippingAddress.state));
-    // const shippingCountry = Country = JSON.parse(JSON.stringify(purchase.shippingAddress.country));
-    // purchase.shippingAddress.state = shippingState.name;
-    // purchase.shippingAddress.country = shippingCountry.name;
+    const shippingState: State = JSON.parse(JSON.stringify(purchase.shippingAddress.state));
+    const shippingCountry: Country = JSON.parse(JSON.stringify(purchase.shippingAddress.country));
+    purchase.shippingAddress.state = shippingState.name;
+    purchase.shippingAddress.country = shippingCountry.name;
 
     purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value;
-    // const billingState = State = JSON.parse(JSON.stringify(purchase.billingAddress.state));
-    // const billingCountry = Country = JSON.parse(JSON.stringify(purchase.billingAddress.country));
-    // purchase.billingAddress.state = billingState.name;
-    // purchase.billingAddress.country = billingCountry.name;
+    const billingState: State = JSON.parse(JSON.stringify(purchase.billingAddress.state));
+    const billingCountry: Country = JSON.parse(JSON.stringify(purchase.billingAddress.country));
+    purchase.billingAddress.state = billingState.name;
+    purchase.billingAddress.country = billingCountry.name;
 
     purchase.order = order;
     purchase.orderItems = orderItems;
@@ -163,6 +177,16 @@ export class CheckoutComponent implements OnInit{
       data => {
         this.creditCardMonths = data;
       }
-    )
+    );
   }
+  getStates(formGroupName: string) {
+    const formGroup = this.checkoutFormGroup.get(formGroupName);
+    console.log(formGroupName);
+    // console.log(this.checkoutFormGroup.get(`${formGroupName}.country`)?.value)
+    const selectedCountry = this.checkoutFormGroup.get(`${formGroupName}.country`)?.value;
+    console.log(selectedCountry);
+    const countryCode = formGroup?.value.selectedCountry.code;
+    console.log(countryCode);
+  }
+
 }
